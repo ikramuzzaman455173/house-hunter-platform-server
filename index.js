@@ -52,18 +52,18 @@ async function run() {
     })
 
     // varifyAdminJwt
-    const varifyAdminJwt = async (req, res, next) => {
-      const email = req.decoded.email
-      const query = { email: email }
-      const user = await usersCollection.findOne(query)
-      if (user?.role !== 'admin') {
-        return res.status(403).send({error:true,message:'forbidden message'})
-      }
-      next()
-    }
+    // const varifyAdminJwt = async (req, res, next) => {
+    //   const email = req.decoded.email
+    //   const query = { email: email }
+    //   const user = await usersCollection.findOne(query)
+    //   if (user?.role !== 'admin') {
+    //     return res.status(403).send({error:true,message:'forbidden message'})
+    //   }
+    //   next()
+    // }
 
       // database users data hanlde api
-    app.get('/users', varifyJwt, varifyAdmin, async (req, res) => {
+    app.get('/users', varifyJwt, async (req, res) => {
       const users = await usersCollection.find({}).toArray()
       res.send(users)
     })
@@ -88,18 +88,12 @@ async function run() {
       res.send(result);
     });
 
-    app.delete('/users/:id', varifyJwt, varifyAdmin, async (req, res) => {
-      const id = req.params.id
-      const query = { _id: new ObjectId(id) }
-      const result = await usersCollection.deleteOne(query)
-      res.send(result)
-    })
-
-
-
-
-
-
+    // app.delete('/users/:id', varifyJwt, varifyAdmin, async (req, res) => {
+    //   const id = req.params.id
+    //   const query = { _id: new ObjectId(id) }
+    //   const result = await usersCollection.deleteOne(query)
+    //   res.send(result)
+    // })
 
 
 
