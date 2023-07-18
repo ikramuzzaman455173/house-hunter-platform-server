@@ -62,6 +62,39 @@ async function run() {
       next()
     }
 
+      // database users data hanlde api
+    app.get('/users', varifyJwt, varifyAdmin, async (req, res) => {
+      const users = await usersCollection.find({}).toArray()
+      res.send(users)
+    })
+
+    // database users data hanlde api
+    app.get('/allUsers', async (req, res) => {
+      const users = await usersCollection.find({}).toArray()
+      res.send(users)
+    })
+
+    app.post('/users', async (req, res) => {
+      const user = req.body;
+      const query = { email: user.email }
+      // console.log(user,'user');
+      const existingUser = await usersCollection.findOne(query);
+
+      if (existingUser) {
+        return res.send({ message: 'user already exists' })
+      }
+
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
+
+    app.delete('/users/:id', varifyJwt, varifyAdmin, async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await usersCollection.deleteOne(query)
+      res.send(result)
+    })
+
 
 
 
