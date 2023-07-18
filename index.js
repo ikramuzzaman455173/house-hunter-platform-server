@@ -105,7 +105,6 @@ async function run() {
 
 
 
-
       // create payments intent
       // app.post('/payment',varifyJwt,async (req,res) => {
       //   const { price } = req.body
