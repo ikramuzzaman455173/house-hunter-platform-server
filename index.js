@@ -42,6 +42,9 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const usersCollection = client.db('HouseHunter').collection('users')
+    const houseCollection = client.db('HouseHunter').collection('allHouses')
+    const bookingCollection = client.db('HouseHunter').collection('allBookings')
+    const paymentCollection = client.db('HouseHunter').collection('payments')
 
     //post jwt
     app.post('/jwt', (req, res) => {
@@ -76,6 +79,7 @@ async function run() {
 
     app.post('/users', async (req, res) => {
       const user = req.body;
+      // console.log({user});
       const query = { email: user.email }
       // console.log(user,'user');
       const existingUser = await usersCollection.findOne(query);
@@ -138,6 +142,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`The Server Is Running On Port: ${port}`)
+  console.log(`HouseHunter Server Is Running On Port:http://localhost:${port}`);
 })
-
