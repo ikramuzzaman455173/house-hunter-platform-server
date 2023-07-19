@@ -42,7 +42,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const usersCollection = client.db('HouseHunter').collection('users')
-    const houseCollection = client.db('HouseHunter').collection('allHouses')
+    const houseCollection = client.db('HouseHunter').collection('allHouse')
     const bookingCollection = client.db('HouseHunter').collection('allBookings')
     const paymentCollection = client.db('HouseHunter').collection('payments')
 
@@ -65,7 +65,7 @@ async function run() {
     //   next()
     // }
 
-      // database users data hanlde api
+    // database users data hanlde api
     app.get('/users', varifyJwt, async (req, res) => {
       const users = await usersCollection.find({}).toArray()
       res.send(users)
@@ -94,13 +94,26 @@ async function run() {
 
 
 
-      // database allHouse get data hanlde api
-      app.get('/allHouses', async (req, res) => {
-        const houses = await houseCollection.find({}).toArray()
-        res.send(houses)
-      })
+    // database allHouse get data hanlde api
+    app.get('/allHouses', async (req, res) => {
+
+      const limit = parseInt(req.query.limit) || 10
+      // console.log(limit);
+      const page = parseInt(req.query.page) || 1
+      // console.log(page);
+      const skip = (page - 1) * limit
+
+      const result = await houseCollection.find({}).limit(limit).skip(skip).toArray();
+        res.send(result)
+    });
 
 
+    //count total house
+    app.get('/totalHouse', async (req, res) => {
+      const totalCount = await houseCollection.countDocuments({});
+      // console.log(`Total Count : ${totalCount}`);
+      return res.status(200).send({ count: totalCount })
+    })
 
 
 
