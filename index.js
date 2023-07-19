@@ -92,33 +92,13 @@ async function run() {
       res.send(result);
     });
 
-    // app.delete('/users/:id', varifyJwt, varifyAdmin, async (req, res) => {
-    //   const id = req.params.id
-    //   const query = { _id: new ObjectId(id) }
-    //   const result = await usersCollection.deleteOne(query)
-    //   res.send(result)
-    // })
 
 
-
-
-
-      // create payments intent
-      // app.post('/payment',varifyJwt,async (req,res) => {
-      //   const { price } = req.body
-      //   const amount = parseInt(price * 100)
-      //   console.log('price',price,'amount',amount);
-      //   const paymentIntent = await stripe.paymentIntents.create({
-      //     amount: amount,
-      //     currency: 'usd',
-      //     payment_method_types:['card']
-      //   })
-      //   res.send({
-      //     clientSecret:paymentIntent.client_secret
-      //   })
-      // })
-
-
+      // database allHouse get data hanlde api
+      app.get('/allHouses', async (req, res) => {
+        const houses = await houseCollection.find({}).toArray()
+        res.send(houses)
+      })
 
 
 
