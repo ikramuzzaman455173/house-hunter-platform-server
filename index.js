@@ -40,11 +40,11 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const usersCollection = client.db('HouseHunter').collection('users')
     const houseCollection = client.db('HouseHunter').collection('allHouse')
     const bookingCollection = client.db('HouseHunter').collection('allBookings')
-    const paymentCollection = client.db('HouseHunter').collection('payments')
+    // const paymentCollection = client.db('HouseHunter').collection('payments')
 
     //post jwt
     app.post('/jwt', (req, res) => {
