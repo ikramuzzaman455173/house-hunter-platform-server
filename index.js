@@ -1,16 +1,16 @@
 const express = require('express')
 const app = express()
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require("dotenv").config();
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // const stripe = require("stripe")(process.env.payment_secreat_key);
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000
 const cors = require('cors');
 
 app.use(cors())
 app.use(express.json())
 
-//varify jwt
+//vairify jwt setup
 const varifyJwt = (req, res, next) => {
   const authorization = req.headers.authorization
   if (!authorization) {
@@ -54,6 +54,7 @@ async function run() {
       res.send({ token })
     })
 
+
     // varifyAdminJwt
     // const varifyAdminJwt = async (req, res, next) => {
     //   const email = req.decoded.email
@@ -96,17 +97,18 @@ async function run() {
 
     // database allHouse get data hanlde api
     app.get('/allHouses', async (req, res) => {
-
-      const limit = parseInt(req.query.limit) || 10
-      // console.log(limit);
-      const page = parseInt(req.query.page) || 1
-      // console.log(page);
-      const skip = (page - 1) * limit
-
-      const result = await houseCollection.find({}).limit(limit).skip(skip).toArray();
-        res.send(result)
+      try {
+        const limit = parseInt(req.query.limit) || 10;
+        const page = parseInt(req.query.page) || 1;
+        const skip = (page - 1) * limit;
+        // console.log({limit,page,skip});
+        const result = await houseCollection.find({}).limit(limit).skip(skip).toArray();
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+      }
     });
-
 
     //count total house
     app.get('/totalHouse', async (req, res) => {
@@ -114,6 +116,38 @@ async function run() {
       // console.log(`Total Count : ${totalCount}`);
       return res.status(200).send({ count: totalCount })
     })
+
+        // select classes part
+        app.get('/renterBooking', varifyJwt, async (req, res) => {
+          const email = req.query.email
+          // console.log(email);
+          if (!email) {
+            res.send([])
+          }
+          const decodedEmail = req.decoded.email
+          if (email !== decodedEmail) {
+            return res.status(403).send({ error: true, message: 'forbidden access' })
+          }
+          const query = { email: email }
+          const result = await bookingCollection.find(query).toArray()
+          console.log(result,'result');
+          res.send(result)
+        })
+
+
+        app.post('/renterBooking', async (req, res) => {
+          const item = req.body
+          // console.log(item,'item');
+          const result = await bookingCollection.insertOne(item)
+          res.send(result)
+        })
+
+        // app.delete('/selectClasses/:id', async (req, res) => {
+        //   const id = req.params.id
+        //   const query = { _id: new ObjectId(id) }
+        //   const result = await selectClassesCollection.deleteOne(query)
+        //   res.send(result)
+        // })
 
 
 
